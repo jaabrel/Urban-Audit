@@ -2,28 +2,42 @@ package pt.ipt.dam.urbanaudit.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.launch
 import pt.ipt.dam.urbanaudit.R
+import pt.ipt.dam.urbanaudit.data.local.AppDatabase
+import pt.ipt.dam.urbanaudit.data.local.OcorrenciaEntity
 import pt.ipt.dam.urbanaudit.data.local.TokenManager
+import pt.ipt.dam.urbanaudit.data.model.Ocorrencia
 import pt.ipt.dam.urbanaudit.data.remote.ApiClient
 import pt.ipt.dam.urbanaudit.data.remote.ApiService
 import pt.ipt.dam.urbanaudit.ui.about.SobreActivity
+import pt.ipt.dam.urbanaudit.ui.auth.LoginActivity
 import pt.ipt.dam.urbanaudit.ui.ocorrencia.CriarOcorrenciaActivity
-import pt.ipt.dam.urbanaudit.data.local.AppDatabase
-import pt.ipt.dam.urbanaudit.data.local.OcorrenciaEntity
-import pt.ipt.dam.urbanaudit.data.model.Ocorrencia
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tokenManager: TokenManager
     private lateinit var apiService: ApiService
     private lateinit var rvOcorrencias: RecyclerView
+    private lateinit var layoutEstadoVazio: LinearLayout
+    private lateinit var tvTotalRegistos: TextView
+    private lateinit var tvIdentificacaoUtilizador: TextView
+    private lateinit var chipGroupFiltros: ChipGroup
+
+    private var adapter: OcorrenciaAdapter? = null
+    private var todasAsOcorrencias: List<Ocorrencia> = emptyList()
+    private var filtroSelecionado: String = "Todos"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,25 +48,65 @@ class MainActivity : AppCompatActivity() {
         val retrofit = ApiClient.getClient(tokenManager)
         apiService = retrofit.create(ApiService::class.java)
 
+        inicializarVistas()
+        configurarFiltros()
+    }
+
+    private fun inicializarVistas() {
         rvOcorrencias = findViewById(R.id.rvOcorrencias)
         rvOcorrencias.layoutManager = LinearLayoutManager(this)
 
-        // Botão para o ecrã SOBRE
-        findViewById<Button>(R.id.btnSobre).setOnClickListener {
+        layoutEstadoVazio = findViewById(R.id.layoutEstadoVazio)
+        tvTotalRegistos = findViewById(R.id.tvTotalRegistos)
+        tvIdentificacaoUtilizador = findViewById(R.id.tvIdentificacaoUtilizador)
+        chipGroupFiltros = findViewById(R.id.chipGroupFiltros)
+
+        // Exibir e-mail e perfil do utilizador
+        val email = tokenManager.getEmail() ?: "Utilizador"
+        val role = tokenManager.getRole() ?: "user"
+        tvIdentificacaoUtilizador.text = if (role == "admin") "$email (Admin)" else email
+
+        // Botão para o ecrã SOBRE (Obrigatório)
+        findViewById<Button?>(R.id.btnSobre)?.setOnClickListener {
             startActivity(Intent(this, SobreActivity::class.java))
         }
-        // Botão para REPORTAR NOVA OCORRÊNCIA
-        findViewById<Button>(R.id.btnNovaOcorrencia).setOnClickListener {
+
+        // Navegação para a Página de Perfil (com Logoff e Os Meus Posts)
+        val abrirPerfil: (View) -> Unit = {
+            startActivity(Intent(this, pt.ipt.dam.urbanaudit.ui.profile.PerfilActivity::class.java))
+        }
+        findViewById<Button?>(R.id.btnPerfil)?.setOnClickListener(abrirPerfil)
+        findViewById<View?>(R.id.layoutBadgeUtilizador)?.setOnClickListener(abrirPerfil)
+
+        // Botão para REPORTAR NOVA OCORRÊNCIA (FAB)
+        findViewById<View?>(R.id.fabNovaOcorrencia)?.setOnClickListener {
             startActivity(Intent(this, CriarOcorrenciaActivity::class.java))
         }
-        // Botão para o PERFIL DO UTILIZADOR
-        findViewById<Button>(R.id.btnPerfil).setOnClickListener {
-            startActivity(Intent(this, PerfilActivity::class.java))
+    }
+
+    private fun configurarFiltros() {
+        chipGroupFiltros.setOnCheckedStateChangeListener { _, checkedIds ->
+            filtroSelecionado = when {
+                checkedIds.contains(R.id.chipVias) -> "Vias e Pavimento"
+                checkedIds.contains(R.id.chipIluminacao) -> "Iluminação Pública"
+                checkedIds.contains(R.id.chipResiduos) -> "Resíduos e Limpeza"
+                checkedIds.contains(R.id.chipEspacosVerdes) -> "Espaços Verdes"
+                checkedIds.contains(R.id.chipOutro) -> "Outro"
+                else -> "Todos"
+            }
+            aplicarFiltro()
         }
     }
 
     override fun onResume() {
         super.onResume()
+        if (tokenManager.getToken() == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+            return
+        }
         carregarOcorrencias()
     }
 
@@ -64,80 +118,111 @@ class MainActivity : AppCompatActivity() {
                 // 1. Tentar buscar à API (Requer Internet)
                 val response = apiService.getOcorrencias()
                 if (response.isSuccessful && response.body() != null) {
-                    val listaOcorrenciasApi = response.body()!!
-                    // 2. Guardar Localmente no Room (Protegido para a app não crashar se o ficheiro da BD estiver corrompido)
+                    todasAsOcorrencias = response.body()!!
+
+                    // 2. Guardar Localmente no Room para cache offline segura
                     try {
-                        dao.deleteAll() // Limpar as velhas
-                        val listaParaGravar = listaOcorrenciasApi.map {
+                        dao.deleteAll()
+                        val listaParaGravar = todasAsOcorrencias.map {
                             OcorrenciaEntity(
-                                id = it.id, titulo = it.titulo, descricao = it.descricao,
-                                latitude = it.latitude, longitude = it.longitude,
-                                fotoBase64 = it.fotoBase64, estado = it.estado, owner_id = it.owner_id
+                                id = it.id,
+                                titulo = it.titulo,
+                                descricao = it.descricao,
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                                fotoBase64 = it.fotoBase64,
+                                estado = it.estado,
+                                owner_id = it.owner_id
                             )
                         }
                         dao.insertAll(listaParaGravar)
                     } catch (dbError: Exception) {
-                        // Se a BD falhar a guardar (ex: esquema desatualizado), ignoramos o erro.
-                        // A app vai mostrar os dados na mesma porque a API respondeu bem!
+                        // Ignora erro se Room estiver em conflito de versão
                     }
 
-                    // 3. Mostrar no ecrã
-                    configurarAdapter(listaOcorrenciasApi)
+                    // 3. Aplicar filtro e atualizar ecrã
+                    aplicarFiltro()
                 } else {
-                    Toast.makeText(this@MainActivity, "Erro na API", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Erro na API (${response.code()})", Toast.LENGTH_SHORT).show()
                 }
 
             } catch (networkError: Exception) {
-                // 4. FALHA DE REDE (Sem Internet): Tentar entrar no Modo Offline!
+                // 4. FALHA DE REDE (Sem Internet): Tentar entrar no Modo Offline via Room
                 try {
-                    val listaOffline = dao.getAll() // Ir buscar ao telemóvel (Também protegido!)
-
+                    val listaOffline = dao.getAll()
                     if (listaOffline.isNotEmpty()) {
-                        val listaParaMostrar = listaOffline.map {
+                        todasAsOcorrencias = listaOffline.map {
                             Ocorrencia(
-                                id = it.id, titulo = it.titulo, descricao = it.descricao,
-                                latitude = it.latitude, longitude = it.longitude,
-                                fotoBase64 = it.fotoBase64, estado = it.estado, owner_id = it.owner_id
+                                id = it.id,
+                                titulo = it.titulo,
+                                descricao = it.descricao,
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                                fotoBase64 = it.fotoBase64,
+                                estado = it.estado,
+                                owner_id = it.owner_id
                             )
                         }
-                        configurarAdapter(listaParaMostrar)
-                        Toast.makeText(this@MainActivity, "Modo Offline (Sem internet, a ler da cache)", Toast.LENGTH_LONG).show()
+                        aplicarFiltro()
+                        Toast.makeText(this@MainActivity, "Modo Offline (dados locais em cache)", Toast.LENGTH_LONG).show()
                     } else {
+                        todasAsOcorrencias = emptyList()
+                        aplicarFiltro()
                         Toast.makeText(this@MainActivity, "Sem internet e sem dados guardados.", Toast.LENGTH_LONG).show()
                     }
                 } catch (dbOfflineError: Exception) {
-                    // Se não há rede E a base de dados falhar a ler, mostra um aviso em vez de crashar!
-                    Toast.makeText(this@MainActivity, "Sem internet e Base de Dados inacessível.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "Sem internet e base de dados inacessível.", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    // Função que é chamada pelo botão vermelho de apagar dentro da RecyclerView
+    private fun aplicarFiltro() {
+        val listaFiltrada = if (filtroSelecionado == "Todos") {
+            todasAsOcorrencias
+        } else {
+            todasAsOcorrencias.filter { ocorrencia ->
+                ocorrencia.obterCategoria().equals(filtroSelecionado, ignoreCase = true)
+            }
+        }
+
+        if (adapter == null) {
+            adapter = OcorrenciaAdapter(
+                lista = listaFiltrada,
+                meuUserId = tokenManager.getUserId(),
+                meuRole = tokenManager.getRole() ?: "user",
+                aoClicarApagar = { idOcorrencia -> apagarOcorrencia(idOcorrencia) }
+            )
+            rvOcorrencias.adapter = adapter
+        } else {
+            adapter?.atualizarLista(listaFiltrada)
+        }
+
+        tvTotalRegistos.text = "Ocorrências Registadas (${listaFiltrada.size})"
+
+        if (listaFiltrada.isEmpty()) {
+            layoutEstadoVazio.visibility = View.VISIBLE
+            rvOcorrencias.visibility = View.GONE
+        } else {
+            layoutEstadoVazio.visibility = View.GONE
+            rvOcorrencias.visibility = View.VISIBLE
+        }
+    }
+
+    // Função que é chamada pelo botão de apagar dentro da RecyclerView
     private fun apagarOcorrencia(idOcorrencia: Int) {
         lifecycleScope.launch {
             try {
                 val response = apiService.deleteOcorrencia(idOcorrencia)
                 if (response.isSuccessful) {
-                    Toast.makeText(this@MainActivity, "Ocorrência apagada!", Toast.LENGTH_SHORT).show()
-                    // Recarrega a lista para a ocorrência desaparecer da interface
+                    Toast.makeText(this@MainActivity, "Ocorrência apagada com sucesso!", Toast.LENGTH_SHORT).show()
                     carregarOcorrencias()
                 } else {
-                    Toast.makeText(this@MainActivity, "Não podes apagar esta ocorrência.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Não tens permissão para apagar esta ocorrência.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@MainActivity, "Erro de rede ao apagar.", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun configurarAdapter(lista: List<Ocorrencia>) {
-        val adapter = OcorrenciaAdapter(
-            lista = lista,
-            meuUserId = tokenManager.getUserId(),
-            meuRole = tokenManager.getRole() ?: "user",
-            aoClicarApagar = { idOcorrencia -> apagarOcorrencia(idOcorrencia) }
-        )
-        rvOcorrencias.adapter = adapter
     }
 }

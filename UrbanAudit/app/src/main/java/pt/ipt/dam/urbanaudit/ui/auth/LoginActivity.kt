@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
                         tokenManager.saveToken(response.body()!!.access_token)
                         tokenManager.saveUserId(response.body()!!.userId)
                         tokenManager.saveRole(response.body()!!.role)
+                        tokenManager.saveEmail(email)
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     } else {
@@ -53,8 +54,8 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-        val btnIrParaRegisto = findViewById<Button>(R.id.btnIrParaRegisto)
-        btnIrParaRegisto.setOnClickListener {
+        val btnIrParaRegisto = findViewById<Button?>(R.id.btnIrParaRegisto)
+        btnIrParaRegisto?.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
     }

@@ -25,7 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
                             AppDatabase.class,
                             "urbanaudit_db"
                     )
-                    .fallbackToDestructiveMigration(true)
+                    .fallbackToDestructiveMigration()
                     .build();
                 }
             }

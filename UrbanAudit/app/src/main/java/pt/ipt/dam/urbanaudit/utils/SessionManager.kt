@@ -16,11 +16,6 @@ class SessionManager(context: Context) {
         private const val KEY_IS_LOGGED_IN = "is_logged_in"
         private const val KEY_USER_EMAIL = "user_email"
         private const val KEY_USER_NOME = "user_nome"
-
-        // Credenciais pré-definidas para avaliação e demonstração do trabalho
-        const val DEMO_EMAIL = "estudante@ipt.pt"
-        const val DEMO_PASSWORD = "dam2026"
-        const val DEMO_NOME = "Estudante DAM (IPT)"
     }
 
     /**
@@ -46,14 +41,14 @@ class SessionManager(context: Context) {
      * Devolve o email do utilizador em sessão.
      */
     fun getEmail(): String {
-        return prefs.getString(KEY_USER_EMAIL, DEMO_EMAIL) ?: DEMO_EMAIL
+        return prefs.getString(KEY_USER_EMAIL, "") ?: ""
     }
 
     /**
      * Devolve o nome do utilizador em sessão.
      */
     fun getNome(): String {
-        return prefs.getString(KEY_USER_NOME, DEMO_NOME) ?: DEMO_NOME
+        return prefs.getString(KEY_USER_NOME, "Utilizador") ?: "Utilizador"
     }
 
     /**

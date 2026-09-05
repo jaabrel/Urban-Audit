@@ -2,137 +2,336 @@ package pt.ipt.dam.urbanaudit.ui.ocorrencia
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.location.Address
+import android.location.Geocoder
+import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pt.ipt.dam.urbanaudit.R
 import pt.ipt.dam.urbanaudit.data.local.TokenManager
 import pt.ipt.dam.urbanaudit.data.model.OcorrenciaCreate
 import pt.ipt.dam.urbanaudit.data.remote.ApiClient
 import pt.ipt.dam.urbanaudit.data.remote.ApiService
 import pt.ipt.dam.urbanaudit.utils.ImageUtils
+import java.io.File
+import java.util.Locale
 
 class CriarOcorrenciaActivity : AppCompatActivity() {
 
-    private lateinit var ivFoto: ImageView
-    private lateinit var tvCoordenadas: TextView
-    private var fotoBase64: String? = null
-    private var lat: Double? = null
-    private var lng: Double? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    // LAUNCHER 1: CÂMARA
-    private val tirarFotoLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-        if (bitmap != null) {
-            ivFoto.setImageBitmap(bitmap)
-            fotoBase64 = ImageUtils.converterBitmapParaBase64(bitmap)
-        } else {
-            Toast.makeText(this, "Foto cancelada", Toast.LENGTH_SHORT).show()
+    // Vistas
+    private lateinit var ivPreviewFoto: ImageView
+    private lateinit var tvFotoAviso: TextView
+    private lateinit var btnTirarFoto: MaterialButton
+    private lateinit var etTitulo: TextInputEditText
+    private lateinit var actvCategoria: AutoCompleteTextView
+    private lateinit var etDescricao: TextInputEditText
+    private lateinit var etLatitude: TextInputEditText
+    private lateinit var etLongitude: TextInputEditText
+    private lateinit var etEndereco: TextInputEditText
+    private lateinit var tvStatusGps: TextView
+    private lateinit var btnAtualizarGps: MaterialButton
+    private lateinit var btnPublicar: MaterialButton
+
+    // Ficheiro e dados da fotografia
+    private var ficheiroFotoTemp: File? = null
+    private var uriFotoTemp: Uri? = null
+    private var fotoBase64: String = ""
+
+    // Coordenadas
+    private var lat: Double = 39.6035
+    private var lng: Double = -8.4078
+
+    // Launcher de captura fotográfica em alta resolução via FileProvider
+    private val tirarFotoLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { sucesso ->
+        if (sucesso && ficheiroFotoTemp != null && ficheiroFotoTemp!!.exists()) {
+            val bitmap = ImageUtils.carregarBitmapRedimensionado(ficheiroFotoTemp!!.absolutePath, 800, 800)
+            if (bitmap != null) {
+                ivPreviewFoto.setImageBitmap(bitmap)
+                ivPreviewFoto.imageTintList = null
+                fotoBase64 = ImageUtils.converterBitmapParaBase64(bitmap)
+                tvFotoAviso.text = "Fotografia capturada com sucesso."
+                tvFotoAviso.setTextColor(ContextCompat.getColor(this, R.color.secondary))
+                btnTirarFoto.text = getString(R.string.btn_alterar_foto)
+            }
         }
     }
 
-    // LAUNCHER 2: GALERIA
-    private val escolherGaleriaLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            val inputStream = contentResolver.openInputStream(uri)
-            val bitmap = BitmapFactory.decodeStream(inputStream)
-            ivFoto.setImageBitmap(bitmap)
-            fotoBase64 = ImageUtils.converterBitmapParaBase64(bitmap)
+    // Launcher de pedido de permissão de câmara
+    private val pedirPermissaoCameraLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { concedida ->
+        if (concedida) {
+            iniciarCapturaFotografia()
         } else {
-            Toast.makeText(this, "Nenhuma imagem selecionada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Permissão de câmara necessária para fotografar.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // Launcher de pedido de permissões de localização (GPS)
+    private val pedirPermissoesLocalizacaoLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissoes ->
+        val fineGranted = permissoes[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissoes[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+        if (fineGranted || coarseGranted) {
+            obterLocalizacaoAtual()
+        } else {
+            tvStatusGps.text = "Sem permissão de GPS. Coordenadas preenchidas por defeito (Tomar)."
+            definirCoordenadasPadraoTomar()
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_criar_ocorrencia) // Cria o XML
+        setContentView(R.layout.activity_criar_ocorrencia)
 
-        ivFoto = findViewById(R.id.ivFoto)
-        tvCoordenadas = findViewById(R.id.tvCoordenadas)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        val etTitulo = findViewById<EditText>(R.id.etTitulo)
-        val etDescricao = findViewById<EditText>(R.id.etDescricao)
+        inicializarVistas()
+        configurarCategorias()
+        configurarBotoes()
 
-        // Botão Câmara
-        findViewById<Button>(R.id.btnCamera).setOnClickListener {
-            tirarFotoLauncher.launch(null)
+        // Obter automaticamente localização GPS de hardware ao entrar
+        verificarPermissoesEObterLocalizacao()
+    }
+
+    private fun inicializarVistas() {
+        val toolbar = findViewById<MaterialToolbar?>(R.id.toolbarCriar)
+        toolbar?.setNavigationOnClickListener { finish() }
+
+        ivPreviewFoto = findViewById(R.id.ivPreviewFoto)
+        tvFotoAviso = findViewById(R.id.tvFotoAviso)
+        btnTirarFoto = findViewById(R.id.btnTirarFoto)
+        etTitulo = findViewById(R.id.etTitulo)
+        actvCategoria = findViewById(R.id.actvCategoria)
+        etDescricao = findViewById(R.id.etDescricao)
+        etLatitude = findViewById(R.id.etLatitude)
+        etLongitude = findViewById(R.id.etLongitude)
+        etEndereco = findViewById(R.id.etEndereco)
+        tvStatusGps = findViewById(R.id.tvStatusGps)
+        btnAtualizarGps = findViewById(R.id.btnAtualizarGps)
+        btnPublicar = findViewById(R.id.btnPublicar)
+    }
+
+    private fun configurarCategorias() {
+        val categorias = arrayOf(
+            "Vias e Pavimento",
+            "Iluminação Pública",
+            "Resíduos e Limpeza",
+            "Espaços Verdes",
+            "Sinalização e Trânsito",
+            "Mobiliário Urbano",
+            "Outro"
+        )
+        val adapterCategorias = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, categorias)
+        actvCategoria.setAdapter(adapterCategorias)
+        actvCategoria.setText(categorias[0], false)
+    }
+
+    private fun configurarBotoes() {
+        btnTirarFoto.setOnClickListener {
+            verificarPermissoesEIniciarCamera()
         }
 
-        // Botão Galeria
-        findViewById<Button>(R.id.btnGaleria).setOnClickListener {
-            escolherGaleriaLauncher.launch("image/*") // Filtra só por imagens
+        btnAtualizarGps.setOnClickListener {
+            verificarPermissoesEObterLocalizacao()
         }
 
-        obterLocalizacaoGPS()
+        btnPublicar.setOnClickListener {
+            validarEPublicar()
+        }
+    }
 
-        findViewById<Button>(R.id.btnSubmeter).setOnClickListener {
-            val titulo = etTitulo.text.toString().trim()
-            val descricao = etDescricao.text.toString().trim()
-            // REQUISITO: Validações Rigorosas da Inserção
-            if (titulo.isEmpty()) {
-                etTitulo.error = "O título é obrigatório"
-                return@setOnClickListener
-            }
-            if (descricao.isEmpty()) {
-                etDescricao.error = "A descrição é obrigatória"
-                return@setOnClickListener
-            }
-            if (fotoBase64 == null) {
-                Toast.makeText(this, "Por favor, tira uma foto ou escolhe da galeria", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            if (lat == null || lng == null) {
-                Toast.makeText(this, "A aguardar sinal GPS... Certifica-te que tens a localização ligada.", Toast.LENGTH_LONG).show()
-                obterLocalizacaoGPS() // Tenta forçar novamente
-                return@setOnClickListener
-            }
-            val request = OcorrenciaCreate(titulo, descricao, lat!!, lng!!, fotoBase64!!)
-            val tokenManager = TokenManager(this)
-            // REQUISITO: Tratamento de Erros no envio
-            lifecycleScope.launch {
-                try {
-                    val api = ApiClient.getClient(tokenManager).create(ApiService::class.java)
-                    val response = api.createOcorrencia(request)
-                    if (response.isSuccessful) {
-                        Toast.makeText(this@CriarOcorrenciaActivity, "Ocorrência enviada com sucesso!", Toast.LENGTH_SHORT).show()
-                        finish()
+    // --- GESTÃO DA CÂMARA ---
+
+    private fun verificarPermissoesEIniciarCamera() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            iniciarCapturaFotografia()
+        } else {
+            pedirPermissaoCameraLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun iniciarCapturaFotografia() {
+        try {
+            ficheiroFotoTemp = ImageUtils.criarFicheiroImagem(this)
+            uriFotoTemp = FileProvider.getUriForFile(
+                this,
+                "pt.ipt.dam.urbanaudit.fileprovider",
+                ficheiroFotoTemp!!
+            )
+            tirarFotoLauncher.launch(uriFotoTemp!!)
+        } catch (e: Exception) {
+            Toast.makeText(this, "Erro ao abrir câmara: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // --- GESTÃO DO GPS ---
+
+    private fun verificarPermissoesEObterLocalizacao() {
+        val finePerm = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarsePerm = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+
+        if (finePerm == PackageManager.PERMISSION_GRANTED || coarsePerm == PackageManager.PERMISSION_GRANTED) {
+            obterLocalizacaoAtual()
+        } else {
+            pedirPermissoesLocalizacaoLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private fun obterLocalizacaoAtual() {
+        tvStatusGps.text = "A obter coordenadas GPS precisas..."
+
+        try {
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        preencherCoordenadas(location.latitude, location.longitude)
                     } else {
-                        Toast.makeText(this@CriarOcorrenciaActivity, "Erro ao enviar para o servidor. Tenta novamente.", Toast.LENGTH_LONG).show()
+                        // Tentar obter a última localização conhecida em cache
+                        fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc ->
+                            if (lastLoc != null) {
+                                preencherCoordenadas(lastLoc.latitude, lastLoc.longitude)
+                            } else {
+                                definirCoordenadasPadraoTomar()
+                            }
+                        }.addOnFailureListener {
+                            definirCoordenadasPadraoTomar()
+                        }
                     }
-                } catch (e: Exception) {
-                    Toast.makeText(this@CriarOcorrenciaActivity, "Falha na rede. Ficheiro muito grande ou sem internet.", Toast.LENGTH_LONG).show()
                 }
+                .addOnFailureListener {
+                    definirCoordenadasPadraoTomar()
+                }
+        } catch (e: SecurityException) {
+            definirCoordenadasPadraoTomar()
+        }
+    }
+
+    private fun preencherCoordenadas(latitude: Double, longitude: Double) {
+        this.lat = latitude
+        this.lng = longitude
+        etLatitude.setText(String.format(Locale.US, "%.6f", latitude))
+        etLongitude.setText(String.format(Locale.US, "%.6f", longitude))
+        tvStatusGps.text = "Localização obtida com sucesso."
+        tvStatusGps.setTextColor(ContextCompat.getColor(this, R.color.secondary))
+
+        obterMoradaReversa(latitude, longitude)
+    }
+
+    private fun definirCoordenadasPadraoTomar() {
+        this.lat = 39.6035
+        this.lng = -8.4078
+        etLatitude.setText(String.format(Locale.US, "%.6f", lat))
+        etLongitude.setText(String.format(Locale.US, "%.6f", lng))
+        etEndereco.setText("Quinta do Contador, Estrada da Serra, Tomar")
+        tvStatusGps.text = "Coordenadas preenchidas (Tomar)"
+    }
+
+    private fun obterMoradaReversa(latitude: Double, longitude: Double) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val geocoder = Geocoder(this@CriarOcorrenciaActivity, Locale.forLanguageTag("pt-PT"))
+                @Suppress("DEPRECATION")
+                val resultados: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+
+                if (!resultados.isNullOrEmpty()) {
+                    val endereco = resultados[0]
+                    val rua = endereco.thoroughfare ?: ""
+                    val localidade = endereco.locality ?: endereco.subAdminArea ?: "Tomar"
+                    val textoMorada = if (rua.isNotBlank()) "$rua, $localidade" else localidade
+
+                    withContext(Dispatchers.Main) {
+                        etEndereco.setText(textoMorada)
+                    }
+                }
+            } catch (e: Exception) {
+                // Se a geocodificação inversa não responder, mantém apenas as coordenadas
             }
         }
     }
 
-    private fun obterLocalizacaoGPS() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 100)
+    // --- PUBLICAÇÃO ---
+
+    private fun validarEPublicar() {
+        val titulo = etTitulo.text?.toString()?.trim() ?: ""
+        if (titulo.isEmpty()) {
+            etTitulo.error = "Por favor, introduza o que representa a foto."
+            etTitulo.requestFocus()
             return
         }
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                lat = location.latitude
-                lng = location.longitude
-                // Mostrar a coordenada na interface
-                tvCoordenadas.text = "GPS: Lat ${lat.toString().take(7)}, Lng ${lng.toString().take(7)}"
-                tvCoordenadas.setTextColor(android.graphics.Color.parseColor("#388E3C")) // Verde para OK
+
+        val categoria = actvCategoria.text?.toString()?.trim()?.ifBlank { "Outro" } ?: "Outro"
+        val descUsuario = etDescricao.text?.toString()?.trim() ?: ""
+        val endereco = etEndereco.text?.toString()?.trim() ?: ""
+
+        // Se o utilizador editou manualmente as coordenadas
+        val latFinal = etLatitude.text?.toString()?.toDoubleOrNull() ?: lat
+        val lngFinal = etLongitude.text?.toString()?.toDoubleOrNull() ?: lng
+
+        // Formatação inteligente da descrição garantindo que a categoria e morada são preservadas
+        val descricaoCompleta = buildString {
+            append("[$categoria] ")
+            if (descUsuario.isNotBlank()) {
+                append(descUsuario)
             } else {
-                tvCoordenadas.text = "Sinal GPS não encontrado. Liga a localização."
+                append("Ocorrência registada na via pública.")
+            }
+            if (endereco.isNotBlank() && !descUsuario.contains(endereco)) {
+                append(" (Local: $endereco)")
+            }
+        }
+
+        btnPublicar.isEnabled = false
+        btnPublicar.text = "A publicar ocorrência..."
+
+        lifecycleScope.launch {
+            try {
+                val api = ApiClient.getClient(TokenManager(this@CriarOcorrenciaActivity)).create(ApiService::class.java)
+                val novaOcorrencia = OcorrenciaCreate(
+                    titulo = titulo,
+                    descricao = descricaoCompleta,
+                    latitude = latFinal,
+                    longitude = lngFinal,
+                    fotoBase64 = fotoBase64,
+                    categoria = categoria
+                )
+                val response = api.createOcorrencia(novaOcorrencia)
+
+                if (response.isSuccessful) {
+                    Toast.makeText(this@CriarOcorrenciaActivity, "Ocorrência publicada com sucesso!", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this@CriarOcorrenciaActivity, "Erro ao publicar (${response.code()})", Toast.LENGTH_LONG).show()
+                    btnPublicar.isEnabled = true
+                    btnPublicar.text = getString(R.string.btn_publicar)
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this@CriarOcorrenciaActivity, "Erro de rede: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                btnPublicar.isEnabled = true
+                btnPublicar.text = getString(R.string.btn_publicar)
             }
         }
     }
