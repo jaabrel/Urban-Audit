@@ -50,6 +50,21 @@
             android:name=".ui.main.PerfilActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.profile.PerfilActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- FileProvider para partilhar com segurança ficheiros de imagem com a aplicação de câmara do sistema -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="pt.ipt.dam.urbanaudit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

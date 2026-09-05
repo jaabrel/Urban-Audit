@@ -1,3 +1,75 @@
 <resources>
     <string name="app_name">Urban Audit</string>
+    <string name="app_subtitulo">Plataforma de Auditoria Urbana de Tomar</string>
+
+    <!-- Autenticação -->
+    <string name="login_titulo">Iniciar Sessão</string>
+    <string name="login_subtitulo">Gestão e reporte de anomalias urbanas</string>
+    <string name="email_hint">Endereço de e-mail</string>
+    <string name="password_hint">Palavra-passe</string>
+    <string name="btn_login">Entrar</string>
+    <string name="btn_ir_para_registo">Ainda não tem conta? Criar conta</string>
+    <string name="erro_campos_obrigatorios">Por favor, preencha todos os campos obrigatórios.</string>
+    <string name="erro_credenciais_invalidas">Credenciais inválidas. Verifique o e-mail e a palavra-passe.</string>
+    <string name="erro_email_invalido">Introduza um endereço de e-mail válido.</string>
+
+    <!-- Ecrã Principal -->
+    <string name="titulo_feed">Auditorias Registadas</string>
+    <string name="subtitulo_feed">Registo colaborativo da via pública</string>
+    <string name="btn_sobre">Sobre</string>
+    <string name="btn_terminar_sessao">Sair</string>
+    <string name="nova_ocorrencia">Nova Ocorrência</string>
+    <string name="sem_ocorrencias_titulo">Nenhuma ocorrência registada</string>
+    <string name="sem_ocorrencias_desc">Toque no botão abaixo para tirar uma fotografia e reportar a primeira ocorrência.</string>
+    <string name="filtro_todos">Todos</string>
+    <string name="filtro_vias">Vias e Pavimento</string>
+    <string name="filtro_iluminacao">Iluminação</string>
+    <string name="filtro_residuos">Limpeza e Resíduos</string>
+    <string name="filtro_espacos_verdes">Espaços Verdes</string>
+    <string name="filtro_outro">Outros</string>
+
+    <!-- Criar Ocorrência -->
+    <string name="titulo_criar_ocorrencia">Registar Ocorrência</string>
+    <string name="hint_titulo">Título do problema (ex: Calçada danificada)</string>
+    <string name="hint_categoria">Categoria</string>
+    <string name="hint_descricao">Descreva os detalhes da ocorrência detetada...</string>
+    <string name="hint_endereco">Morada ou ponto de referência</string>
+    <string name="btn_tirar_foto">Tirar Fotografia</string>
+    <string name="btn_alterar_foto">Alterar Fotografia</string>
+    <string name="btn_obter_localizacao">Atualizar Coordenadas GPS</string>
+    <string name="btn_publicar">Publicar Ocorrência</string>
+    <string name="status_gps_a_obter">A contactar sensores GPS do dispositivo...</string>
+    <string name="status_gps_obtido">Coordenadas obtidas com precisão</string>
+    <string name="status_gps_manual">Coordenadas inseridas manualmente</string>
+    <string name="status_gps_sem_permissao">Permissão de localização necessária para detetar GPS</string>
+    <string name="erro_foto_obrigatoria">É obrigatório tirar uma fotografia da ocorrência.</string>
+    <string name="erro_titulo_obrigatorio">O título da ocorrência é obrigatório.</string>
+    <string name="erro_descricao_obrigatoria">A descrição da ocorrência é obrigatória.</string>
+    <string name="sucesso_publicacao">Ocorrência publicada e guardada localmente com sucesso!</string>
+
+    <!-- Detalhe da Ocorrência -->
+    <string name="titulo_detalhe">Detalhe da Ocorrência</string>
+    <string name="btn_editar">Editar</string>
+    <string name="btn_eliminar">Eliminar</string>
+    <string name="dialogo_eliminar_titulo">Eliminar Ocorrência</string>
+    <string name="dialogo_eliminar_mensagem">Tem a certeza de que pretende eliminar definitivamente esta ocorrência e a respetiva fotografia?</string>
+    <string name="btn_confirmar">Confirmar</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_guardar">Guardar</string>
+    <string name="titulo_editar_ocorrencia">Editar Ocorrência</string>
+    <string name="sucesso_eliminacao">Ocorrência eliminada com sucesso.</string>
+    <string name="sucesso_atualizacao">Ocorrência atualizada com sucesso.</string>
+
+    <!-- Estados -->
+    <string name="estado_pendente">Pendente</string>
+    <string name="estado_analise">Em Análise</string>
+    <string name="estado_resolvido">Resolvido</string>
+
+    <!-- Ecrã Sobre -->
+    <string name="sobre_titulo">Sobre o Trabalho</string>
+    <string name="sobre_instituicao">Instituto Politécnico de Tomar (IPT)</string>
+    <string name="sobre_escola">Escola Superior de Tecnologia de Tomar (ESTT)</string>
+    <string name="sobre_curso">Licenciatura em Engenharia Informática</string>
+    <string name="sobre_disciplina">Desenvolvimento de Aplicações Móveis (DAM)</string>
+    <string name="sobre_ano_letivo">Ano Letivo: 2025/2026 – 3º Ano, 1º Semestre</string>
 </resources>
