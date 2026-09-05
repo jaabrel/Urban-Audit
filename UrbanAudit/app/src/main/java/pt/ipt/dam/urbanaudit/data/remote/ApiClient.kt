@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
 
-    private const val BASE_URL = "http://192.168.1.157:8000/"
+    private const val BASE_URL = "https://urban-audit-api-production.up.railway.app/"
 
     fun getClient(tokenManager: TokenManager): Retrofit {
         val interceptor = Interceptor { chain ->
