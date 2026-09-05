@@ -37,11 +37,26 @@ import pt.ipt.dam.urbanaudit.utils.ImageUtils
 import java.io.File
 import java.util.Locale
 
+/**
+ * Ecrã de Registo e Publicação de Ocorrências Municipais (Urban Audit).
+ * 
+ * Integrações de Hardware e Sensores:
+ * 1. Câmara Fotográfica: Captura de alta resolução com [FileProvider] e [ActivityResultContracts.TakePicture].
+ * 2. Galeria do Dispositivo: Seleção alternativa de imagens através de [ActivityResultContracts.GetContent].
+ * 3. Sensor GPS (Geolocalização): Deteção de coordenadas precisas via [FusedLocationProviderClient].
+ * 4. Geocodificação Inversa (Geocoder): Conversão de coordenadas (Lat/Lng) em endereço legível (rua, localidade).
+ * 
+ * Regras de Negócio e Validações:
+ * - Título com comprimento mínimo de 3 caracteres.
+ * - Descrição com comprimento mínimo de 10 caracteres.
+ * - Fotografia obrigatória convertida para Base64 com compressão JPEG.
+ * - Tratamento de erros detalhados da API REST (incluindo parsing de validação HTTP 422).
+ */
 class CriarOcorrenciaActivity : AppCompatActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    // Vistas
+    // Componentes de interface gráfica (Vistas)
     private lateinit var ivPreviewFoto: ImageView
     private lateinit var tvFotoAviso: TextView
     private lateinit var btnTirarFoto: MaterialButton
@@ -55,7 +70,7 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
     private lateinit var btnAtualizarGps: MaterialButton
     private lateinit var btnPublicar: MaterialButton
 
-    // Ficheiro e dados da fotografia
+    // Ficheiro e dados da fotografia em memória
     private var ficheiroFotoTemp: File? = null
     private var uriFotoTemp: Uri? = null
     private var fotoBase64: String = ""

@@ -14,6 +14,16 @@ import pt.ipt.dam.urbanaudit.data.model.Ocorrencia
 import pt.ipt.dam.urbanaudit.utils.ImageUtils
 import java.util.Locale
 
+/**
+ * Adaptador para a RecyclerView de Ocorrências Urbanas.
+ * 
+ * Responsabilidades:
+ * - Vinculação (data binding) de dados do modelo [Ocorrencia] às vistas do layout [item_ocorrencia].
+ * - Descodificação assíncrona/segura de fotografias em formato Base64 para Bitmap.
+ * - Estilização dinâmica de etiquetas de estado (Pendente, Em Análise, Resolvido).
+ * - Extração inteligente de moradas ou coordenadas GPS a partir da descrição.
+ * - Controlo de visibilidade do botão de remoção consoante o perfil (admin ou autor).
+ */
 class OcorrenciaAdapter(
     private var lista: List<Ocorrencia>,
     private val meuUserId: Int,
@@ -21,6 +31,9 @@ class OcorrenciaAdapter(
     private val aoClicarApagar: (Int) -> Unit
 ) : RecyclerView.Adapter<OcorrenciaAdapter.ViewHolder>() {
 
+    /**
+     * Padrão ViewHolder: mantém referências diretas às vistas de cada item para otimizar a reciclagem de memória.
+     */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val ivFoto: ImageView = view.findViewById(R.id.ivFotoOcorrencia)
         val txtCategoria: TextView = view.findViewById(R.id.tvCategoriaOcorrencia)
@@ -32,6 +45,7 @@ class OcorrenciaAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        // Inflação do layout individual de ocorrência
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_ocorrencia, parent, false)
         return ViewHolder(view)
     }

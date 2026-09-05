@@ -25,6 +25,15 @@ import pt.ipt.dam.urbanaudit.data.remote.ApiService
 import pt.ipt.dam.urbanaudit.ui.auth.LoginActivity
 import pt.ipt.dam.urbanaudit.ui.main.OcorrenciaAdapter
 
+/**
+ * Ecrã de Perfil do Utilizador (Urban Audit).
+ * 
+ * Responsabilidades:
+ * - Apresentação dos dados de identificação do utilizador autenticado (e-mail, role/papel).
+ * - Exibição e contagem exclusiva das ocorrências publicadas pelo próprio utilizador ("Os Meus Posts").
+ * - Suporte a fallback offline para os posts do utilizador via base de dados Room.
+ * - Encerramento seguro de sessão (Logoff) com diálogo de confirmação visual e limpeza de tokens.
+ */
 class PerfilActivity : AppCompatActivity() {
 
     private lateinit var tokenManager: TokenManager

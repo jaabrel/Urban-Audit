@@ -25,6 +25,17 @@ import pt.ipt.dam.urbanaudit.ui.about.SobreActivity
 import pt.ipt.dam.urbanaudit.ui.auth.LoginActivity
 import pt.ipt.dam.urbanaudit.ui.ocorrencia.CriarOcorrenciaActivity
 
+/**
+ * Ecrã Principal (Dashboard / Feed) da aplicação Urban Audit.
+ * 
+ * Funcionalidades principais:
+ * - Apresentação da lista de ocorrências urbanas georreferenciadas.
+ * - Suporte a Modo Offline com persistência local em base de dados SQLite via AndroidX Room.
+ * - Sincronização automática com a API REST remota sempre que há conectividade.
+ * - Filtragem dinâmica por categorias (Vias, Iluminação, Limpeza, Espaços Verdes, etc.).
+ * - Controlo de acesso: verificação de sessão ativa no ciclo de vida (onResume) e permissões de eliminação.
+ * - Navegação rápida para os ecrãs Sobre, Perfil de Utilizador e Criar Nova Ocorrência (FAB).
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var tokenManager: TokenManager
@@ -43,8 +54,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Inicialização do gestor de sessão e cliente HTTP Retrofit
         tokenManager = TokenManager(this)
-
         val retrofit = ApiClient.getClient(tokenManager)
         apiService = retrofit.create(ApiService::class.java)
 
@@ -98,6 +109,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Verificação de segurança no regresso ao ecrã:
+     * Garante que se a sessão for terminada noutra atividade (ex: Perfil),
+     * o utilizador é imediatamente reencaminhado para o Login.
+     */
     override fun onResume() {
         super.onResume()
         if (tokenManager.getToken() == null) {
@@ -110,12 +126,18 @@ class MainActivity : AppCompatActivity() {
         carregarOcorrencias()
     }
 
+    /**
+     * Estratégia de Carregamento de Dados (Offline-First / Resiliente):
+     * 1. Contacta a API REST para obter os registos mais atualizados da cloud.
+     * 2. Em caso de sucesso, atualiza a base de dados local Room (cache) para permitir acesso futuro sem net.
+     * 3. Em caso de falha de rede (ex: sem Wi-Fi/dados), recorre automaticamente à base de dados Room.
+     */
     private fun carregarOcorrencias() {
         val dao = AppDatabase.getDatabase(this).ocorrenciaDao()
 
         lifecycleScope.launch {
             try {
-                // 1. Tentar buscar à API (Requer Internet)
+                // 1. Tentar obter da API REST remota (requer conectividade)
                 val response = apiService.getOcorrencias()
                 if (response.isSuccessful && response.body() != null) {
                     todasAsOcorrencias = response.body()!!
@@ -177,6 +199,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Aplica o filtro selecionado (Vias, Iluminação, Limpeza, etc.) à lista global de ocorrências,
+     * atualiza o adaptador da RecyclerView e gere a visibilidade do estado vazio.
+     */
     private fun aplicarFiltro() {
         val listaFiltrada = if (filtroSelecionado == "Todos") {
             todasAsOcorrencias
@@ -209,7 +235,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Função que é chamada pelo botão de apagar dentro da RecyclerView
+    /**
+     * Elimina uma ocorrência remotamente através da API REST.
+     * Operação protegida pelo servidor: apenas o próprio autor ou administradores têm permissão.
+     */
     private fun apagarOcorrencia(idOcorrencia: Int) {
         lifecycleScope.launch {
             try {
@@ -218,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, "Ocorrência apagada com sucesso!", Toast.LENGTH_SHORT).show()
                     carregarOcorrencias()
                 } else {
-                    Toast.makeText(this@MainActivity, "Não tens permissão para apagar esta ocorrência.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Não tem permissão para apagar esta ocorrência.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Toast.makeText(this@MainActivity, "Erro de rede ao apagar.", Toast.LENGTH_SHORT).show()
