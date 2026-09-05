@@ -61,51 +61,49 @@ class MainActivity : AppCompatActivity() {
                 val response = apiService.getOcorrencias()
                 if (response.isSuccessful && response.body() != null) {
                     val listaOcorrenciasApi = response.body()!!
-
-                    // 2. Guardar Localmente no Room (Fazer "Cache")
-                    dao.deleteAll() // Limpar as velhas
-
-                    // Converter da classe 'Ocorrencia' (API) para 'OcorrenciaEntity' (Room)
-                    val listaParaGravar = listaOcorrenciasApi.map {
-                        OcorrenciaEntity(
-                            id = it.id,
-                            titulo = it.titulo,
-                            descricao = it.descricao,
-                            latitude = it.latitude,
-                            longitude = it.longitude,
-                            fotoBase64 = it.fotoBase64,
-                            estado = it.estado,
-                            owner_id = it.owner_id
-                        )
+                    // 2. Guardar Localmente no Room (Protegido para a app não crashar se o ficheiro da BD estiver corrompido)
+                    try {
+                        dao.deleteAll() // Limpar as velhas
+                        val listaParaGravar = listaOcorrenciasApi.map {
+                            OcorrenciaEntity(
+                                id = it.id, titulo = it.titulo, descricao = it.descricao,
+                                latitude = it.latitude, longitude = it.longitude,
+                                fotoBase64 = it.fotoBase64, estado = it.estado, owner_id = it.owner_id
+                            )
+                        }
+                        dao.insertAll(listaParaGravar)
+                    } catch (dbError: Exception) {
+                        // Se a BD falhar a guardar (ex: esquema desatualizado), ignoramos o erro.
+                        // A app vai mostrar os dados na mesma porque a API respondeu bem!
                     }
-                    dao.insertAll(listaParaGravar) // Guardar no telemóvel
+
                     // 3. Mostrar no ecrã
                     configurarAdapter(listaOcorrenciasApi)
                 } else {
                     Toast.makeText(this@MainActivity, "Erro na API", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: Exception) {
-                // 4. FALHA DE REDE (Sem Internet): Entra o Modo Offline!
-                val listaOffline = dao.getAll() // Ir buscar ao telemóvel
 
-                if (listaOffline.isNotEmpty()) {
-                    // Converter de volta de 'OcorrenciaEntity' para 'Ocorrencia'
-                    val listaParaMostrar = listaOffline.map {
-                        Ocorrencia(
-                            id = it.id,
-                            titulo = it.titulo,
-                            descricao = it.descricao,
-                            latitude = it.latitude,
-                            longitude = it.longitude,
-                            fotoBase64 = it.fotoBase64,
-                            estado = it.estado,
-                            owner_id = it.owner_id
-                        )
+            } catch (networkError: Exception) {
+                // 4. FALHA DE REDE (Sem Internet): Tentar entrar no Modo Offline!
+                try {
+                    val listaOffline = dao.getAll() // Ir buscar ao telemóvel (Também protegido!)
+
+                    if (listaOffline.isNotEmpty()) {
+                        val listaParaMostrar = listaOffline.map {
+                            Ocorrencia(
+                                id = it.id, titulo = it.titulo, descricao = it.descricao,
+                                latitude = it.latitude, longitude = it.longitude,
+                                fotoBase64 = it.fotoBase64, estado = it.estado, owner_id = it.owner_id
+                            )
+                        }
+                        configurarAdapter(listaParaMostrar)
+                        Toast.makeText(this@MainActivity, "Modo Offline (Sem internet, a ler da cache)", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this@MainActivity, "Sem internet e sem dados guardados.", Toast.LENGTH_LONG).show()
                     }
-                    configurarAdapter(listaParaMostrar) // Mostrar os dados antigos
-                    Toast.makeText(this@MainActivity, "Modo Offline (Sem Rede): A mostrar dados guardados", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(this@MainActivity, "Sem internet e sem dados guardados.", Toast.LENGTH_LONG).show()
+                } catch (dbOfflineError: Exception) {
+                    // Se não há rede E a base de dados falhar a ler, mostra um aviso em vez de crashar!
+                    Toast.makeText(this@MainActivity, "Sem internet e Base de Dados inacessível.", Toast.LENGTH_LONG).show()
                 }
             }
         }
