@@ -1,52 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <EditText
+        android:id="@+id/etTitulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Título da ocorrência" />
+    <EditText
+        android:id="@+id/etDescricao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descrição do problema"
+        android:lines="3" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reportar Problema"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
-        <EditText
-            android:id="@+id/etTitulo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Título (ex: Buraco na via)"
-            android:layout_marginBottom="16dp"/>
-        <EditText
-            android:id="@+id/etDescricao"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:hint="Descrição detalhada..."
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
-            android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
         <Button
-            android:id="@+id/btnTirarFoto"
-            android:layout_width="match_parent"
+            android:id="@+id/btnCamera"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Abrir Câmara e Tirar Foto"
-            android:layout_marginBottom="8dp"/>
-        <ImageView
-            android:id="@+id/ivPreview"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:background="#D3D3D3"
-            android:layout_marginBottom="24dp"/>
+            android:layout_weight="1"
+            android:layout_marginEnd="4dp"
+            android:text="Câmara" />
         <Button
-            android:id="@+id/btnSubmeter"
-            android:layout_width="match_parent"
+            android:id="@+id/btnGaleria"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Guardar e Enviar"
-            android:textSize="18sp"
-            android:backgroundTint="#388E3C"/>
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:text="Galeria" />
     </LinearLayout>
-</ScrollView>
+    <ImageView
+        android:id="@+id/ivFoto"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="8dp"
+        android:background="#DDDDDD"
+        android:scaleType="centerCrop" />
+    <TextView
+        android:id="@+id/tvCoordenadas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="A obter localização GPS..."
+        android:textColor="#D32F2F"
+        android:textStyle="bold"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/btnSubmeter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Enviar Ocorrência" />
+</LinearLayout>
