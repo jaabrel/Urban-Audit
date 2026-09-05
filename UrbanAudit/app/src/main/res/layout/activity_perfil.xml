@@ -70,7 +70,7 @@
                             android:layout_gravity="center"
                             android:src="@drawable/ic_person"
                             app:tint="@color/primary"
-                            android:contentDescription="Avatar" />
+                            android:contentDescription="@string/avatar" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <!-- E-mail do Utilizador -->
@@ -78,7 +78,7 @@
                         android:id="@+id/tvPerfilEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="utilizador@ipt.pt"
+                        android:text=""
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary" />
@@ -88,7 +88,7 @@
                         android:id="@+id/tvPerfilRole"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cidadão"
+                        android:text="@string/cidad_o"
                         android:textSize="12sp"
                         android:textStyle="bold"
                         android:textColor="@color/primary"
@@ -123,7 +123,7 @@
                                 android:id="@+id/tvTotalMinhasOcorrencias"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="0"
+                                android:text="@string/_0"
                                 android:textSize="24sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/primary" />
@@ -131,19 +131,19 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Minhas Ocorrências"
+                                android:text="@string/minhas_ocorr_ncias"
                                 android:textSize="13sp"
                                 android:textColor="@color/text_secondary" />
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- Botão de Terminar Sessão (Logoff) -->
+                    <!-- Botão de Terminar Sessão (Logout) -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnLogoff"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:text="Terminar Sessão (Logoff)"
+                        android:text="@string/terminar_sess_o_logout"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/white"
@@ -170,7 +170,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Os Meus Posts"
+                    android:text="@string/os_meus_posts"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
@@ -179,7 +179,7 @@
                     android:id="@+id/tvSubtituloMinhas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 registos"
+                    android:text="@string/_0_registos"
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary" />
             </LinearLayout>
@@ -207,13 +207,13 @@
                     android:layout_height="80dp"
                     android:src="@drawable/ic_empty_box"
                     app:tint="@color/text_hint"
-                    android:contentDescription="Sem publicações"
+                    android:contentDescription="@string/sem_publica_es"
                     android:layout_marginBottom="12dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ainda não tem ocorrências publicadas"
+                    android:text="@string/ainda_n_o_tem_ocorr_ncias_publicadas"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
@@ -221,7 +221,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="As ocorrências que registar com a câmara e GPS aparecerão aqui no seu histórico."
+                    android:text="@string/lasttextviewPerfil"
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
                     android:textAlignment="center"

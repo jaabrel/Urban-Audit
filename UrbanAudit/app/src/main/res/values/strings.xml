@@ -72,4 +72,14 @@
     <string name="sobre_curso">Licenciatura em Engenharia Informática</string>
     <string name="sobre_disciplina">Desenvolvimento de Aplicações Móveis (DAM)</string>
     <string name="sobre_ano_letivo">Ano Letivo: 2025/2026 – 3º Ano, 1º Semestre</string>
+    <string name="lasttextviewPerfil">As ocorrências que registar com a câmara e GPS aparecerão aqui no seu histórico.</string>
+    <string name="sem_publica_es">Sem publicações</string>
+    <string name="ainda_n_o_tem_ocorr_ncias_publicadas">Ainda não tem ocorrências publicadas</string>
+    <string name="_0_registos">0 registos</string>
+    <string name="os_meus_posts">Os Meus Posts</string>
+    <string name="terminar_sess_o_logout">Terminar Sessão (logout)</string>
+    <string name="minhas_ocorr_ncias">Minhas Ocorrências</string>
+    <string name="avatar">Avatar</string>
+    <string name="cidad_o">Cidadão</string>
+    <string name="_0">0</string>
 </resources>
