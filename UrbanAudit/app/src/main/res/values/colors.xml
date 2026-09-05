@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Cores Principais - Tema Municipal / Auditoria Urbana -->
+    <color name="primary">#0277BD</color>
+    <color name="primary_variant">#01579B</color>
+    <color name="primary_dark">#004C8C</color>
+    <color name="on_primary">#FFFFFF</color>
+    
+    <color name="secondary">#00897B</color>
+    <color name="secondary_variant">#004D40</color>
+    <color name="on_secondary">#FFFFFF</color>
+    
+    <color name="accent_orange">#F57C00</color>
+    
+    <!-- Cores de Estado das Ocorrências -->
+    <color name="status_pendente_bg">#FFF3E0</color>
+    <color name="status_pendente_text">#E65100</color>
+    
+    <color name="status_analise_bg">#E3F2FD</color>
+    <color name="status_analise_text">#0D47A1</color>
+    
+    <color name="status_resolvido_bg">#E8F5E9</color>
+    <color name="status_resolvido_text">#1B5E20</color>
+
+    <!-- Neutros e Superfícies -->
+    <color name="background_light">#F5F7FA</color>
+    <color name="surface_card">#FFFFFF</color>
+    <color name="surface_border">#E0E4E8</color>
+    <color name="text_primary">#1A1C1E</color>
+    <color name="text_secondary">#5A6065</color>
+    <color name="text_hint">#8D949B</color>
+    <color name="divider">#E2E8F0</color>
+    
+    <!-- Cores Base -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="red_error">#BA1A1A</color>
 </resources>

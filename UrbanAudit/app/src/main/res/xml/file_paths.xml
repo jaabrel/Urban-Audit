@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Permite partilhar ficheiros de imagem na pasta privada de imagens da aplicação -->
+    <external-files-path
+        name="imagens_ocorrencias"
+        path="Pictures/" />
+    <cache-path
+        name="cache_imagens"
+        path="." />
+</paths>
