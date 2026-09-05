@@ -1,136 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="1dp"
-    app:strokeColor="@color/surface_border"
-    app:cardBackgroundColor="@color/surface_card"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground">
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:layout_margin="8dp"
+    android:background="#EEEEEE"
+    android:gravity="center_vertical">
+    <TextView
+        android:id="@+id/txtTitulo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <!-- Fotografia da Ocorrência -->
-            <ImageView
-                android:id="@+id/ivFotoOcorrencia"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:scaleType="centerCrop"
-                android:background="#EEEEEE"
-                android:src="@drawable/ic_camera"
-                app:tint="#BDBDBD"
-                android:contentDescription="Fotografia da Ocorrência" />
-
-            <!-- Conteúdo Informativo -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="14dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <!-- Badge de Categoria -->
-                    <TextView
-                        android:id="@+id/tvCategoriaOcorrencia"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Vias e Pavimento"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/primary"
-                        android:background="#E1F5FE"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="2dp" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"
-                        android:layout_weight="1" />
-
-                    <!-- Badge de Estado -->
-                    <TextView
-                        android:id="@+id/tvEstadoOcorrencia"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pendente"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/status_pendente_text"
-                        android:background="@drawable/bg_badge" />
-                </LinearLayout>
-
-                <!-- Título -->
-                <TextView
-                    android:id="@+id/tvTituloOcorrencia"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Buraco na via pública"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/text_primary"
-                    android:maxLines="2"
-                    android:ellipsize="end"
-                    android:layout_marginTop="6dp" />
-
-                <!-- Morada / Ponto de Referência -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="4dp">
-
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="14dp"
-                        android:src="@drawable/ic_location"
-                        app:tint="@color/text_secondary"
-                        android:contentDescription="Ícone Localização" />
-
-                    <TextView
-                        android:id="@+id/tvLocalizacaoOcorrencia"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Av. Cândido Madureira, Tomar"
-                        android:textSize="12sp"
-                        android:textColor="@color/text_secondary"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:layout_marginStart="4dp" />
-                </LinearLayout>
-
-                <!-- Data e Hora -->
-                <TextView
-                    android:id="@+id/tvDataOcorrencia"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="05/09/2026 · 14:30"
-                    android:textSize="11sp"
-                    android:textColor="@color/text_hint"
-                    android:layout_marginTop="4dp" />
-
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+        android:layout_weight="1"
+        android:text="Título do Problema"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnApagar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apagar"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF" />
+</LinearLayout>

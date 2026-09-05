@@ -1,224 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:background="@color/primary">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:titleTextColor="@color/white"
-            app:subtitleTextColor="#E0F2FE">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingEnd="12dp">
-
-                <!-- Botão Sobre Obrigatório -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSobre"
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:text="@string/btn_sobre"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
-                    app:icon="@drawable/ic_info"
-                    app:iconTint="@color/white"
-                    app:iconSize="16dp"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_marginEnd="4dp" />
-
-                <!-- Botão Terminar Sessão -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSair"
-                    android:layout_width="wrap_content"
-                    android:layout_height="38dp"
-                    android:text="@string/btn_terminar_sessao"
-                    android:textSize="12sp"
-                    android:textColor="#FFCDD2"
-                    app:icon="@drawable/ic_logout"
-                    app:iconTint="#FFCDD2"
-                    app:iconSize="16dp"
-                    style="@style/Widget.MaterialComponents.Button.TextButton" />
-            </LinearLayout>
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <!-- Filtros Rápidos por Categoria -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            android:background="#01579B"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupFiltros"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipTodos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_todos"
-                    android:checked="true"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipVias"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_vias"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipIluminacao"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_iluminacao"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipResiduos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_residuos"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipEspacosVerdes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_espacos_verdes"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipOutro"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filtro_outro"
-                    style="@style/Widget.MaterialComponents.Chip.Choice" />
-
-            </com.google.android.material.chip.ChipGroup>
-        </HorizontalScrollView>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <!-- Contador e Resumo -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="18dp"
-            android:paddingTop="14dp"
-            android:paddingBottom="6dp"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tvTotalRegistos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ocorrências Registadas (0)"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tvIdentificacaoUtilizador"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="estudante@ipt.pt"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary" />
-        </LinearLayout>
-
-        <!-- Lista Recycler -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvOcorrencias"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:paddingBottom="80dp" />
-
-        <!-- Vista de Estado Vazio (Sem Ocorrências) -->
-        <LinearLayout
-            android:id="@+id/layoutEstadoVazio"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="32dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_empty_box"
-                app:tint="@color/text_hint"
-                android:contentDescription="Sem Ocorrências"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sem_ocorrencias_titulo"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/sem_ocorrencias_desc"
-                android:textSize="13sp"
-                android:textColor="@color/text_secondary"
-                android:gravity="center"
-                android:layout_marginTop="6dp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- Botão Flutuante (FAB) para Criar Ocorrência -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabNovaOcorrencia"
+    android:padding="16dp">
+    <!-- Botão Obrigatório para a Secção "Sobre" -->
+    <Button
+        android:id="@+id/btnSobre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="20dp"
-        android:text="@string/nova_ocorrencia"
-        android:textColor="@color/white"
-        app:icon="@drawable/ic_camera"
-        app:iconTint="@color/white"
-        android:backgroundTint="@color/accent_orange" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="Créditos / Sobre" />
+    <TextView
+        android:id="@+id/tvTituloApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@id/btnSobre"
+        android:gravity="center_vertical"
+        android:text="Ocorrências"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnPerfil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="O Meu Perfil" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvOcorrencias"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btnSobre"
+        android:layout_marginTop="16dp" />
+    <!-- Botão Flutuante (ou normal) para adicionar ocorrência -->
+    <Button
+        android:id="@+id/btnNovaOcorrencia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Reportar Nova Ocorrência" />
+</RelativeLayout>
