@@ -2,31 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp"
-    android:layout_marginBottom="8dp"
-    android:background="#F0F0F0">
-
+    android:layout_margin="8dp"
+    android:background="#EEEEEE"
+    android:gravity="center_vertical">
     <TextView
-        android:id="@+id/tvTituloOcorrencia"
-        android:layout_width="match_parent"
+        android:id="@+id/txtTitulo"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#000000" />
-
-    <TextView
-        android:id="@+id/tvEstadoOcorrencia"
-        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:text="Título do Problema"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnApagar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="#006600" />
-
-    <TextView
-        android:id="@+id/tvLocalizacaoOcorrencia"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textSize="12sp"
-        android:textColor="#666666" />
+        android:text="Apagar"
+        android:backgroundTint="#D32F2F"
+        android:textColor="#FFFFFF" />
 </LinearLayout>

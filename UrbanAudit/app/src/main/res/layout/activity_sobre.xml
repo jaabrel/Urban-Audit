@@ -1,55 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true">
-
+    android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="24dp"
         android:gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Créditos da Aplicação"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+        <!-- Dados do Curso -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Licenciatura em Eng. Informática"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sobre o Trabalho"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Espaço para as fotografias dos autores do trabalho -->
-        <LinearLayout
+            android:text="Desenvolvimento de Aplicações Móveis\nAno Letivo 2025/26"
+            android:textAlignment="center"
+            android:layout_marginBottom="32dp"/>
+        <!-- Aluno 1 -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#CCCCCC"
+            android:src="@mipmap/ic_launcher" /> <!-- Coloca a tua foto na pasta res/drawable e muda o src -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nº 12345 - O Teu Nome"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"/>
+        <!-- Aluno 2 -->
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:background="#CCCCCC"
+            android:src="@mipmap/ic_launcher" /> <!-- Foto do colega -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nº 67890 - Nome do Colega"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"/>
+        <!-- Declaração de Bibliotecas e Código de Terceiros -->
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="24dp">
-
-            <ImageView
-                android:id="@+id/ivAutor1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="16dp"
-                android:background="#CCCCCC"
-                android:contentDescription="Foto Autor 1" />
-
-            <ImageView
-                android:id="@+id/ivAutor2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="16dp"
-                android:background="#CCCCCC"
-                android:contentDescription="Foto Autor 2" />
-        </LinearLayout>
+            android:text="Bibliotecas e Código de Terceiros:"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
 
         <TextView
-            android:id="@+id/tvInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:lineSpacingExtra="4dp" />
-
+            android:text="- Retrofit2: Usado para comunicação com a API REST.\n- Play Services Location: Usado para obter as coordenadas GPS.\n- Gson: Serialização JSON."/>
     </LinearLayout>
 </ScrollView>
