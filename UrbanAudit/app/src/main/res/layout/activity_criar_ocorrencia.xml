@@ -90,17 +90,38 @@
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="8dp" />
 
-                    <!-- Botão de Ação para a Câmara -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTirarFoto"
+                    <!-- Botões de Ação: Câmara e Galeria -->
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/btn_tirar_foto"
-                        app:icon="@drawable/ic_camera"
-                        app:iconTint="@color/white"
-                        app:cornerRadius="10dp"
-                        android:backgroundTint="@color/primary"
-                        android:layout_marginTop="12dp" />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnTirarFoto"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:text="@string/btn_tirar_foto"
+                            app:icon="@drawable/ic_camera"
+                            app:iconTint="@color/white"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/primary" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGaleria"
+                            android:layout_width="0dp"
+                            android:layout_height="48dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="Galeria"
+                            app:cornerRadius="10dp"
+                            android:textColor="@color/primary"
+                            app:strokeColor="@color/primary"
+                            app:strokeWidth="1.5dp"
+                            android:backgroundTint="@color/white" />
+                    </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

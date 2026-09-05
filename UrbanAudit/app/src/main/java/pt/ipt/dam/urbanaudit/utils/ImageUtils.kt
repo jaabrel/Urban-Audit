@@ -80,11 +80,11 @@ object ImageUtils {
     }
 
     /**
-     * Converte um Bitmap numa String Base64 (útil para interoperabilidade com futuras APIs REST).
+     * Converte um Bitmap numa String Base64 (útil para interoperabilidade com a API REST).
      */
-    fun converterBitmapParaBase64(bitmap: Bitmap): String {
+    fun converterBitmapParaBase64(bitmap: Bitmap, qualidade: Int = 75): String {
         val outputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, qualidade, outputStream)
         val bytes = outputStream.toByteArray()
         return Base64.encodeToString(bytes, Base64.NO_WRAP)
     }
