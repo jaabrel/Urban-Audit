@@ -8,11 +8,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import pt.ipt.dam.urbanaudit.R
 import pt.ipt.dam.urbanaudit.data.local.AppDatabase
@@ -30,7 +32,6 @@ class PerfilActivity : AppCompatActivity() {
 
     private lateinit var tvPerfilEmail: TextView
     private lateinit var tvPerfilRole: TextView
-    private lateinit var tvPerfilUserId: TextView
     private lateinit var tvTotalMinhasOcorrencias: TextView
     private lateinit var tvSubtituloMinhas: TextView
     private lateinit var btnLogoff: MaterialButton
@@ -58,7 +59,6 @@ class PerfilActivity : AppCompatActivity() {
 
         tvPerfilEmail = findViewById(R.id.tvPerfilEmail)
         tvPerfilRole = findViewById(R.id.tvPerfilRole)
-        tvPerfilUserId = findViewById(R.id.tvPerfilUserId)
         tvTotalMinhasOcorrencias = findViewById(R.id.tvTotalMinhasOcorrencias)
         tvSubtituloMinhas = findViewById(R.id.tvSubtituloMinhas)
         btnLogoff = findViewById(R.id.btnLogoff)
@@ -75,11 +75,9 @@ class PerfilActivity : AppCompatActivity() {
     private fun apresentarDadosUtilizador() {
         val email = tokenManager.getEmail() ?: "Utilizador"
         val role = tokenManager.getRole() ?: "user"
-        val userId = tokenManager.getUserId()
 
         tvPerfilEmail.text = email
         tvPerfilRole.text = if (role.equals("admin", ignoreCase = true)) "Administrador" else "Cidadão / Utilizador"
-        tvPerfilUserId.text = if (userId > 0) "#$userId" else "—"
     }
 
     override fun onResume() {
@@ -178,7 +176,7 @@ class PerfilActivity : AppCompatActivity() {
     }
 
     private fun confirmarLogoff() {
-        AlertDialog.Builder(this)
+        val dialog = MaterialAlertDialogBuilder(this)
             .setTitle("Terminar Sessão")
             .setMessage("Deseja sair da sua conta e regressar ao ecrã de início de sessão?")
             .setPositiveButton("Sim, Sair") { _, _ ->
@@ -189,6 +187,12 @@ class PerfilActivity : AppCompatActivity() {
                 finishAffinity()
             }
             .setNegativeButton("Cancelar", null)
-            .show()
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(R.drawable.bg_dialog_white)
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(ContextCompat.getColor(this, R.color.red_error))
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(ContextCompat.getColor(this, R.color.text_secondary))
     }
 }

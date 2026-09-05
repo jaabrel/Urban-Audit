@@ -178,7 +178,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Aluno 1"
+                                android:text="João Alexandre de Abreu"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/text_primary" />
@@ -186,7 +186,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Nº Mecanográfico: 24844"
+                                android:text="Nº 24844"
                                 android:textSize="13sp"
                                 android:textColor="@color/text_secondary"
                                 android:layout_marginTop="2dp" />
@@ -232,7 +232,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Aluno 2"
+                                android:text="Rodrigo Mendes Pinheiro"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/text_primary" />
@@ -240,7 +240,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Nº Mecanográfico: 26402"
+                                android:text="Nº 26402"
                                 android:textSize="13sp"
                                 android:textColor="@color/text_secondary"
                                 android:layout_marginTop="2dp" />

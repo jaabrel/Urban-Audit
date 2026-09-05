@@ -63,17 +63,7 @@
                 android:textColor="@color/text_secondary"
                 android:layout_marginTop="4dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="DAM 2025/26 · IPT Tomar"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/secondary"
-                android:background="@drawable/bg_category_badge"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:layout_marginTop="10dp" />
+
         </LinearLayout>
 
         <!-- Cartão de Formulário de Iniciar Sessão com Alto Destaque -->

@@ -4,7 +4,7 @@
 
     <!-- Autenticação -->
     <string name="login_titulo">Iniciar Sessão</string>
-    <string name="login_subtitulo">Gestão e reporte de anomalias urbanas</string>
+    <string name="login_subtitulo">Gestão e reportagem de anomalias urbanas</string>
     <string name="email_hint">Endereço de e-mail</string>
     <string name="password_hint">Palavra-passe</string>
     <string name="btn_login">Entrar</string>
@@ -34,7 +34,7 @@
     <string name="hint_categoria">Categoria</string>
     <string name="hint_descricao">Descreva os detalhes da ocorrência detetada...</string>
     <string name="hint_endereco">Morada ou ponto de referência</string>
-    <string name="btn_tirar_foto">Tirar Fotografia</string>
+    <string name="btn_tirar_foto">Fotografia</string>
     <string name="btn_alterar_foto">Alterar Fotografia</string>
     <string name="btn_obter_localizacao">Atualizar Coordenadas GPS</string>
     <string name="btn_publicar">Publicar Ocorrência</string>
