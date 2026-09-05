@@ -71,21 +71,12 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SobreActivity::class.java))
         }
 
-        // Botão Terminar Sessão
-        findViewById<Button?>(R.id.btnSair)?.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Terminar Sessão")
-                .setMessage("Deseja sair da sua conta?")
-                .setPositiveButton("Sair") { _, _ ->
-                    tokenManager.clear()
-                    val intent = Intent(this, LoginActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intent)
-                    finish()
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
+        // Navegação para a Página de Perfil (com Logoff e Os Meus Posts)
+        val abrirPerfil: (View) -> Unit = {
+            startActivity(Intent(this, pt.ipt.dam.urbanaudit.ui.profile.PerfilActivity::class.java))
         }
+        findViewById<Button?>(R.id.btnPerfil)?.setOnClickListener(abrirPerfil)
+        findViewById<View?>(R.id.layoutBadgeUtilizador)?.setOnClickListener(abrirPerfil)
 
         // Botão para REPORTAR NOVA OCORRÊNCIA (FAB)
         findViewById<View?>(R.id.fabNovaOcorrencia)?.setOnClickListener {
@@ -109,6 +100,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        if (tokenManager.getToken() == null) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+            return
+        }
         carregarOcorrencias()
     }
 

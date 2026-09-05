@@ -41,16 +41,16 @@
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_marginEnd="4dp" />
 
-                <!-- Botão Terminar Sessão -->
+                <!-- Botão Perfil do Utilizador (com acesso a Logoff e Meus Posts) -->
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSair"
+                    android:id="@+id/btnPerfil"
                     android:layout_width="wrap_content"
                     android:layout_height="38dp"
-                    android:text="@string/btn_terminar_sessao"
+                    android:text="Perfil"
                     android:textSize="12sp"
-                    android:textColor="#FFCDD2"
-                    app:icon="@drawable/ic_logout"
-                    app:iconTint="#FFCDD2"
+                    android:textColor="@color/white"
+                    app:icon="@drawable/ic_person"
+                    app:iconTint="@color/white"
                     app:iconSize="16dp"
                     style="@style/Widget.MaterialComponents.Button.TextButton" />
             </LinearLayout>
@@ -154,12 +154,15 @@
                 android:textStyle="bold"
                 android:textColor="@color/text_primary" />
 
-            <!-- Identificação do Utilizador em Sessão -->
+            <!-- Identificação do Utilizador em Sessão (Clicável para Perfil) -->
             <LinearLayout
+                android:id="@+id/layoutBadgeUtilizador"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
                 android:background="@drawable/bg_category_badge"
                 android:paddingHorizontal="10dp"
                 android:paddingVertical="4dp">

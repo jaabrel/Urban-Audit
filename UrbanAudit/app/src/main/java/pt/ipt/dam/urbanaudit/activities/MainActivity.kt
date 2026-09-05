@@ -74,8 +74,8 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SobreActivity::class.java))
         }
 
-        // Botão para terminar sessão com diálogo de confirmação
-        findViewById<MaterialButton>(R.id.btnSair).setOnClickListener {
+        // Botão para aceder ao perfil ou terminar sessão
+        findViewById<View?>(R.id.btnPerfil)?.setOnClickListener {
             confirmarTerminarSessao()
         }
 
