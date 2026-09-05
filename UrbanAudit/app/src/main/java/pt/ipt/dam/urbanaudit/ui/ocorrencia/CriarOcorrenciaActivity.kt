@@ -2,16 +2,19 @@ package pt.ipt.dam.urbanaudit.ui.ocorrencia
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -72,6 +75,27 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
                 tvFotoAviso.text = "Fotografia capturada com sucesso."
                 tvFotoAviso.setTextColor(ContextCompat.getColor(this, R.color.secondary))
                 btnTirarFoto.text = getString(R.string.btn_alterar_foto)
+            }
+        }
+    }
+
+    // Launcher de seleção de fotografia a partir da galeria do dispositivo
+    private val escolherGaleriaLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            try {
+                contentResolver.openInputStream(uri)?.use { inputStream ->
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    if (bitmap != null) {
+                        ivPreviewFoto.setImageBitmap(bitmap)
+                        ivPreviewFoto.imageTintList = null
+                        fotoBase64 = ImageUtils.converterBitmapParaBase64(bitmap, 75)
+                        tvFotoAviso.text = "Fotografia selecionada da galeria."
+                        tvFotoAviso.setTextColor(ContextCompat.getColor(this, R.color.secondary))
+                        btnTirarFoto.text = getString(R.string.btn_alterar_foto)
+                    }
+                }
+            } catch (e: Exception) {
+                Toast.makeText(this, "Erro ao carregar imagem da galeria", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -148,6 +172,10 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
     private fun configurarBotoes() {
         btnTirarFoto.setOnClickListener {
             verificarPermissoesEIniciarCamera()
+        }
+
+        findViewById<MaterialButton?>(R.id.btnGaleria)?.setOnClickListener {
+            escolherGaleriaLauncher.launch("image/*")
         }
 
         btnAtualizarGps.setOnClickListener {
@@ -277,8 +305,8 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
 
     private fun validarEPublicar() {
         val titulo = etTitulo.text?.toString()?.trim() ?: ""
-        if (titulo.isEmpty()) {
-            etTitulo.error = "Por favor, introduza o que representa a foto."
+        if (titulo.length < 3) {
+            etTitulo.error = "O título deve ter no mínimo 3 caracteres."
             etTitulo.requestFocus()
             return
         }
@@ -287,11 +315,13 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
         val descUsuario = etDescricao.text?.toString()?.trim() ?: ""
         val endereco = etEndereco.text?.toString()?.trim() ?: ""
 
-        // Se o utilizador editou manualmente as coordenadas
-        val latFinal = etLatitude.text?.toString()?.toDoubleOrNull() ?: lat
-        val lngFinal = etLongitude.text?.toString()?.toDoubleOrNull() ?: lng
+        // Se o utilizador editou manualmente as coordenadas (suporta ponto e vírgula)
+        val latTexto = etLatitude.text?.toString()?.replace(',', '.')?.trim()
+        val lngTexto = etLongitude.text?.toString()?.replace(',', '.')?.trim()
+        val latFinal = (latTexto?.toDoubleOrNull() ?: lat).coerceIn(-90.0, 90.0)
+        val lngFinal = (lngTexto?.toDoubleOrNull() ?: lng).coerceIn(-180.0, 180.0)
 
-        // Formatação inteligente da descrição garantindo que a categoria e morada são preservadas
+        // Formatação inteligente da descrição garantindo sempre no mínimo 10 caracteres
         val descricaoCompleta = buildString {
             append("[$categoria] ")
             if (descUsuario.isNotBlank()) {
@@ -302,6 +332,12 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
             if (endereco.isNotBlank() && !descUsuario.contains(endereco)) {
                 append(" (Local: $endereco)")
             }
+        }.trim()
+
+        if (descricaoCompleta.length < 10) {
+            etDescricao.error = "A descrição deve ter no mínimo 10 caracteres."
+            etDescricao.requestFocus()
+            return
         }
 
         btnPublicar.isEnabled = false
@@ -324,7 +360,45 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
                     Toast.makeText(this@CriarOcorrenciaActivity, "Ocorrência publicada com sucesso!", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
-                    Toast.makeText(this@CriarOcorrenciaActivity, "Erro ao publicar (${response.code()})", Toast.LENGTH_LONG).show()
+                    val erroCorpo = response.errorBody()?.string() ?: ""
+                    Log.e("API_ERRO", "Falha HTTP ${response.code()}: $erroCorpo")
+                    var detalhe = "Erro no servidor (${response.code()})"
+                    try {
+                        if (erroCorpo.isNotBlank()) {
+                            val json = org.json.JSONObject(erroCorpo)
+                            val detail = json.opt("detail")
+                            if (detail is org.json.JSONArray) {
+                                val listaErros = mutableListOf<String>()
+                                for (i in 0 until detail.length()) {
+                                    val errItem = detail.getJSONObject(i)
+                                    val loc = errItem.optJSONArray("loc")
+                                    val campo = if (loc != null && loc.length() > 1) loc.getString(loc.length() - 1) else "Campo"
+                                    val msg = errItem.optString("msg", "Inválido")
+                                    val campoNome = when (campo) {
+                                        "titulo" -> "Título"
+                                        "descricao" -> "Descrição"
+                                        "latitude" -> "Latitude"
+                                        "longitude" -> "Longitude"
+                                        "fotoBase64" -> "Fotografia"
+                                        else -> campo
+                                    }
+                                    listaErros.add("$campoNome: $msg")
+                                }
+                                detalhe = listaErros.joinToString("\n")
+                            } else if (detail != null) {
+                                detalhe = detail.toString()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        detalhe = "Código de erro: ${response.code()}"
+                    }
+
+                    AlertDialog.Builder(this@CriarOcorrenciaActivity)
+                        .setTitle("Erro na Publicação (${response.code()})")
+                        .setMessage(detalhe)
+                        .setPositiveButton("OK", null)
+                        .show()
+
                     btnPublicar.isEnabled = true
                     btnPublicar.text = getString(R.string.btn_publicar)
                 }
