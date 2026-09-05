@@ -53,5 +53,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
+        val btnIrParaRegisto = findViewById<Button>(R.id.btnIrParaRegisto)
+        btnIrParaRegisto.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
     }
 }

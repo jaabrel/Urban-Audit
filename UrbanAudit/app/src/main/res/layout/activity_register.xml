@@ -3,39 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
+    android:padding="24dp"
     android:gravity="center">
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Urban Audit"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="32dp"/>
-    <EditText
-        android:id="@+id/etEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp"/>
+        android:text="Criar Nova Conta"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginBottom="32dp" />
     <EditText
-        android:id="@+id/etPassword"
+        android:id="@+id/etRegEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Email (ex: aluno@ipt.pt)"
+        android:inputType="textEmailAddress"
+        android:layout_marginBottom="16dp" />
+    <EditText
+        android:id="@+id/etRegPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Palavra-passe"
         android:inputType="textPassword"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp" />
     <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnRegistar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Entrar" />
-    <Button
-        android:id="@+id/btnIrParaRegisto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        style="?attr/materialButtonOutlinedStyle"
-        android:text="Regista-te" />
+        android:text="Registar Conta" />
 </LinearLayout>
