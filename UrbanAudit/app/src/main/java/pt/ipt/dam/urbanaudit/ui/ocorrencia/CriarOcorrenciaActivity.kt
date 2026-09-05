@@ -31,7 +31,7 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
     // O objeto que lança a Câmara
     private val tirarFotoLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
         if (bitmap != null) {
-            findViewById<ImageView>(R.id.ivPreview).setImageBitmap(bitmap)
+            findViewById<ImageView>(R.id.ivPreviewFoto).setImageBitmap(bitmap)
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream)
             fotoBase64 = Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT)
@@ -48,7 +48,7 @@ class CriarOcorrenciaActivity : AppCompatActivity() {
         // 2. Obter GPS automaticamente ao abrir o ecrã
         obterLocalizacaoGPS()
         // 3. Botão Guardar e Enviar para API
-        findViewById<Button>(R.id.btnSubmeter).setOnClickListener {
+        findViewById<Button>(R.id.btnPublicar).setOnClickListener {
             val titulo = findViewById<EditText>(R.id.etTitulo).text.toString()
             val desc = findViewById<EditText>(R.id.etDescricao).text.toString()
             lifecycleScope.launch {

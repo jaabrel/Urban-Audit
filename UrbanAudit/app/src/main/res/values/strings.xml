@@ -9,6 +9,7 @@
     <string name="password_hint">Palavra-passe</string>
     <string name="btn_login">Entrar</string>
     <string name="btn_login_demo">Entrar com Conta de Teste (DAM IPT)</string>
+    <string name="btn_ir_para_registo">Ainda não tem conta? Criar conta</string>
     <string name="erro_campos_obrigatorios">Por favor, preencha todos os campos obrigatórios.</string>
     <string name="erro_credenciais_invalidas">Credenciais inválidas. Verifique o e-mail e a palavra-passe.</string>
     <string name="erro_email_invalido">Introduza um endereço de e-mail válido.</string>

@@ -38,11 +38,11 @@ class MainActivity : AppCompatActivity() {
         rvOcorrencias.layoutManager = LinearLayoutManager(this)
 
         // Botão para o ecrã SOBRE (Obrigatório)
-        findViewById<Button>(R.id.btnSobre).setOnClickListener {
+        findViewById<Button?>(R.id.btnSobre)?.setOnClickListener {
             startActivity(Intent(this, SobreActivity::class.java))
         }
-        // Botão para REPORTAR NOVA OCORRÊNCIA
-        findViewById<Button>(R.id.btnNovaOcorrencia).setOnClickListener {
+        // Botão para REPORTAR NOVA OCORRÊNCIA (FAB)
+        findViewById<android.view.View?>(R.id.fabNovaOcorrencia)?.setOnClickListener {
             startActivity(Intent(this, CriarOcorrenciaActivity::class.java))
         }
     }

@@ -120,15 +120,34 @@
                         android:layout_marginStart="4dp" />
                 </LinearLayout>
 
-                <!-- Data e Hora -->
-                <TextView
-                    android:id="@+id/tvDataOcorrencia"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="05/09/2026 · 14:30"
-                    android:textSize="11sp"
-                    android:textColor="@color/text_hint"
-                    android:layout_marginTop="4dp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp">
+
+                    <!-- Data e Hora -->
+                    <TextView
+                        android:id="@+id/tvDataOcorrencia"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="05/09/2026 · 14:30"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_hint" />
+
+                    <!-- Botão Apagar para perfil com permissões -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnApagar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="Apagar"
+                        android:textSize="11sp"
+                        android:visibility="gone"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:textColor="@color/error" />
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

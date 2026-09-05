@@ -53,9 +53,15 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
         }
-        val btnIrParaRegisto = findViewById<Button>(R.id.btnIrParaRegisto)
-        btnIrParaRegisto.setOnClickListener {
+        val btnIrParaRegisto = findViewById<Button?>(R.id.btnIrParaRegisto)
+        btnIrParaRegisto?.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
+        val btnLoginDemo = findViewById<Button?>(R.id.btnLoginDemo)
+        btnLoginDemo?.setOnClickListener {
+            findViewById<EditText>(R.id.etEmail)?.setText("estudante@ipt.pt")
+            findViewById<EditText>(R.id.etPassword)?.setText("dam2026")
         }
     }
 }

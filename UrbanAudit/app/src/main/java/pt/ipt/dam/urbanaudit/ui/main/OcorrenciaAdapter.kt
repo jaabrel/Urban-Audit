@@ -18,8 +18,8 @@ class OcorrenciaAdapter(
 ) : RecyclerView.Adapter<OcorrenciaAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val txtTitulo = view.findViewById<TextView>(R.id.txtTitulo)
-        val btnApagar = view.findViewById<Button>(R.id.btnApagar)
+        val txtTitulo: TextView = view.findViewById(R.id.tvTituloOcorrencia)
+        val btnApagar: View? = view.findViewById(R.id.btnApagar)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,11 +32,11 @@ class OcorrenciaAdapter(
         holder.txtTitulo.text = ocorrencia.titulo
         // REGRA DE AVALIAÇÃO: Controlo de acesso
         if (meuRole == "admin" || ocorrencia.owner_id == meuUserId) {
-            holder.btnApagar.visibility = View.VISIBLE
+            holder.btnApagar?.visibility = View.VISIBLE
         } else {
-            holder.btnApagar.visibility = View.GONE
+            holder.btnApagar?.visibility = View.GONE
         }
-        holder.btnApagar.setOnClickListener {
+        holder.btnApagar?.setOnClickListener {
             // REGRA DE AVALIAÇÃO: Confirmar antes de apagar
             AlertDialog.Builder(holder.itemView.context)
                 .setTitle("Apagar")
