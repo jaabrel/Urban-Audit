@@ -27,21 +27,33 @@
             android:gravity="center"
             android:layout_marginBottom="28dp">
 
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@drawable/ic_location"
-                app:tint="@color/primary"
-                android:contentDescription="@string/app_name"
-                android:layout_marginBottom="12dp" />
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/white"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/surface_border"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_location"
+                    app:tint="@color/primary"
+                    android:contentDescription="@string/app_name" />
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                android:textSize="30sp"
+                android:textSize="32sp"
                 android:textStyle="bold"
-                android:textColor="@color/primary" />
+                android:textColor="@color/primary"
+                android:letterSpacing="0.02" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -58,34 +70,34 @@
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="@color/secondary"
-                android:background="#E0F2F1"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="3dp"
-                android:layout_marginTop="8dp" />
+                android:background="@drawable/bg_category_badge"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="4dp"
+                android:layout_marginTop="10dp" />
         </LinearLayout>
 
-        <!-- Cartão de Formulário de Iniciar Sessão -->
+        <!-- Cartão de Formulário de Iniciar Sessão com Alto Destaque -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="3dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
             app:strokeWidth="1dp"
-            app:strokeColor="@color/surface_border"
+            app:strokeColor="@color/card_stroke"
             app:cardBackgroundColor="@color/surface_card"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="26dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/login_titulo"
-                    android:textSize="20sp"
+                    android:textSize="22sp"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary" />
 
@@ -95,7 +107,7 @@
                     android:text="@string/login_subtitulo"
                     android:textSize="13sp"
                     android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="20dp" />
+                    android:layout_marginBottom="22dp" />
 
                 <!-- Campo E-mail -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -103,6 +115,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email_hint"
+                    app:startIconDrawable="@drawable/ic_person"
+                    app:startIconTint="@color/primary"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="16dp">
 
@@ -110,6 +128,8 @@
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/text_hint"
                         android:inputType="textEmailAddress"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -121,6 +141,11 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/password_hint"
                     app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/primary"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_marginBottom="24dp">
 
@@ -128,6 +153,8 @@
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/text_hint"
                         android:inputType="textPassword"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -136,64 +163,29 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLogin"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="54dp"
                     android:text="@string/btn_login"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    app:cornerRadius="10dp"
+                    app:cornerRadius="12dp"
+                    android:elevation="4dp"
                     android:backgroundTint="@color/primary"
                     android:layout_marginBottom="12dp" />
-
-                <!-- Botão Acesso de Demonstração / Avaliação Docente -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnLoginDemo"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:text="@string/btn_login_demo"
-                    android:textSize="13sp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:strokeColor="@color/primary"
-                    android:textColor="@color/primary"
-                    app:cornerRadius="10dp" />
 
                 <!-- Botão para Ir para o Ecrã de Registo -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIrParaRegisto"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="46dp"
                     android:text="@string/btn_ir_para_registo"
                     android:textSize="13sp"
+                    android:textStyle="bold"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:textColor="@color/primary"
-                    android:layout_marginTop="6dp" />
+                    android:layout_marginTop="4dp" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- Caixa Informativa das Credenciais de Avaliação -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#E8EEF5"
-            android:padding="14dp"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Credenciais para Avaliação Docente (Guião DAM):"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary_dark" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Utilizador: estudante@ipt.pt | Palavra-passe: dam2026"
-                android:textSize="12sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="2dp" />
-        </LinearLayout>
 
         <!-- Espaço inferior flexível -->
         <View

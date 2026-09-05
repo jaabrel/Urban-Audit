@@ -90,6 +90,25 @@ object ImageUtils {
     }
 
     /**
+     * Descodifica uma string Base64 para um Bitmap.
+     * Suporta formato bruto ou com prefixo data URL ("data:image/...;base64,").
+     */
+    fun converterBase64ParaBitmap(base64Str: String?): Bitmap? {
+        if (base64Str.isNullOrBlank()) return null
+        return try {
+            val limpa = if (base64Str.contains(",")) {
+                base64Str.substringAfter(",")
+            } else {
+                base64Str
+            }
+            val bytes = Base64.decode(limpa.trim(), Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    /**
      * Elimina o ficheiro da fotografia do armazenamento interno.
      */
     fun eliminarFicheiro(caminhoFicheiro: String) {

@@ -43,19 +43,8 @@ class LoginActivity : AppCompatActivity() {
         etPassword = findViewById(R.id.etPassword)
 
         val btnLogin = findViewById<MaterialButton>(R.id.btnLogin)
-        val btnLoginDemo = findViewById<MaterialButton>(R.id.btnLoginDemo)
-
         btnLogin.setOnClickListener {
             validarEIniciarSessao()
-        }
-
-        // Preenchimento e autenticação rápida para facilidade de demonstração pelo docente
-        btnLoginDemo.setOnClickListener {
-            etEmail.setText(SessionManager.DEMO_EMAIL)
-            etPassword.setText(SessionManager.DEMO_PASSWORD)
-            tilEmail.error = null
-            tilPassword.error = null
-            iniciarSessaoUtilizador(SessionManager.DEMO_EMAIL, SessionManager.DEMO_NOME)
         }
     }
 

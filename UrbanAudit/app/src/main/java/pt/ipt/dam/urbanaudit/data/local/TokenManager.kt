@@ -18,6 +18,8 @@ class TokenManager(context: Context) {
         prefs.edit().clear().apply()
     }
     fun saveRole(role: String) = prefs.edit().putString("ROLE", role).apply()
+    fun getRole(): String? = prefs.getString("ROLE", "user")
 
-    fun getRole():String? = prefs.getString("ROLE", "user")
+    fun saveEmail(email: String) = prefs.edit().putString("EMAIL", email).apply()
+    fun getEmail(): String? = prefs.getString("EMAIL", "Utilizador")
 }

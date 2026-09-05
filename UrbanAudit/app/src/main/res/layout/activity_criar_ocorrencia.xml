@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:background="@color/primary">
+        android:background="@drawable/bg_toolbar_gradient">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbarCriar"
@@ -144,6 +144,8 @@
                             android:id="@+id/etTitulo"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/text_hint"
                             android:inputType="textCapSentences"
                             android:maxLines="1" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -161,6 +163,8 @@
                             android:id="@+id/actvCategoria"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/text_hint"
                             android:inputType="none" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -176,6 +180,8 @@
                             android:id="@+id/etDescricao"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/text_hint"
                             android:inputType="textMultiLine|textCapSentences"
                             android:gravity="top|start"
                             android:minLines="3" />
@@ -256,6 +262,8 @@
                                 android:id="@+id/etLatitude"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/text_hint"
                                 android:inputType="numberDecimal|numberSigned" />
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -272,6 +280,8 @@
                                 android:id="@+id/etLongitude"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/black"
+                                android:textColorHint="@color/text_hint"
                                 android:inputType="numberDecimal|numberSigned" />
                         </com.google.android.material.textfield.TextInputLayout>
                     </LinearLayout>
@@ -289,6 +299,8 @@
                             android:id="@+id/etEndereco"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:textColorHint="@color/text_hint"
                             android:inputType="textPostalAddress|textCapWords" />
                     </com.google.android.material.textfield.TextInputLayout>
 
